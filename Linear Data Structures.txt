@@ -1,0 +1,253 @@
+#Q10. Implement a queue using the stack data structure.
+class QueueUsingStacks:
+    def __init__(self):
+        self.enqueue_stack = []
+        self.dequeue_stack = []
+    def enqueue(self, item):
+        self.enqueue_stack.append(item)
+    def _transfer_elements(self):
+        while self.enqueue_stack:
+            self.dequeue_stack.append(self.enqueue_stack.pop())
+    def dequeue(self):
+        if not self.dequeue_stack:
+            if not self.enqueue_stack:
+                raise IndexError("Queue is empty")
+            self._transfer_elements()
+        return self.dequeue_stack.pop()
+    def is_empty(self):
+        return not (self.enqueue_stack or self.dequeue_stack)
+    def size(self):
+        return len(self.enqueue_stack) + len(self.dequeue_stack)
+queue = QueueUsingStacks()
+queue.enqueue(1)
+queue.enqueue(2)
+queue.enqueue(3)
+print(queue.dequeue())  
+print(queue.dequeue())  
+print(queue.dequeue())
+-----------------------------------------------------------------------
+
+#Q9. Evaluate a postfix expression using stack.
+def evaluate_postfix(expression):
+    stack = []    
+    for char in expression:
+        if char.isdigit():
+            stack.append(int(char))
+        else:
+            operand2 = stack.pop()
+            operand1 = stack.pop()
+            if char == '+':
+                stack.append(operand1 + operand2)
+            elif char == '-':
+                stack.append(operand1 - operand2)
+            elif char == '*':
+                stack.append(operand1 * operand2)
+            elif char == '/':
+                stack.append(operand1 / operand2)
+    return stack.pop()
+postfix_expr = "12+5*"
+result = evaluate_postfix(postfix_expr)
+print(result)
+-----------------------------------------------------------------------
+
+#Q8. Reverse a string using a stack data structure.
+def reverse_string(input_string):
+    stack = []
+    for char in input_string:
+        stack.append(char)
+    reversed_string = ""
+    while stack:
+        reversed_string += stack.pop()
+    return reversed_string
+input_str = "Data Science!"
+reversed_str = reverse_string(input_str)
+print(reversed_str)
+-----------------------------------------------------------------------
+
+#Q7. Move all the negative elements to one side of the array.
+def move_negatives_to_one_side(arr):
+    left, right = 0, len(arr) - 1
+    while left <= right:
+        if arr[left] < 0 and arr[right] < 0:
+            left += 1
+        elif arr[left] >= 0 and arr[right] < 0:
+            arr[left], arr[right] = arr[right], arr[left]
+            left += 1
+            right -= 1
+        elif arr[left] >= 0 and arr[right] >= 0:
+            right -= 1
+        else:
+            left += 1
+            right -= 1    
+    return arr
+arr = [-1, 2, -3, 4, 5, -6, -7, 8, 9]
+result = move_negatives_to_one_side(arr)
+print(result)
+-------------------------------------------------------------------
+
+#Q6. Find the Kth largest and Kth smallest number in an array.
+def kth_largest_and_smallest(arr, k):
+    arr.sort()
+    kth_smallest = arr[k - 1]
+    kth_largest = arr[-k]
+    return kth_smallest, kth_largest
+arr = [3, 1, 7, 2, 8, 4]
+k = 3
+kth_smallest, kth_largest = kth_largest_and_smallest(arr, k)
+print(f"{k}th smallest: {kth_smallest}")
+print(f"{k}th largest: {kth_largest}")
+---------------------------------------------------------------
+
+#Q5. Find duplicates in an array.
+def find_duplicates(arr):
+    seen = set()
+    duplicates = []
+    for num in arr:
+        if num in seen:
+            duplicates.append(num)
+        else:
+            seen.add(num)
+    return duplicates
+arr = [4, 3, 2, 7, 8, 2, 6, 4, 8]
+duplicate_elements = find_duplicates(arr)
+print("Duplicate elements:", duplicate_elements)
+---------------------------------------------------------------------
+
+#Q4. In an array, Count Pairs with given sum.
+def count_pairs_with_sum(arr, target_sum):
+    count = 0
+    seen = set()
+    for num in arr:
+        complement = target_sum - num        
+        if complement in seen:
+            count += 1        
+        seen.add(num)    
+    return count
+arr = [1, 5, 7, -1, 5]
+target_sum = 6
+result = count_pairs_with_sum(arr, target_sum)
+print("Number of pairs with sum", target_sum, ":", result)
+-------------------------------------------------------------------------
+
+#Q3. Merge a linked list into another linked list at alternate positions.
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+def merge_alternate(head1, head2):
+    if not head1:
+        return head2
+    if not head2:
+        return head1    
+    current1 = head1
+    current2 = head2
+    while current1 and current2:
+        next1 = current1.next
+        next2 = current2.next        
+        current1.next = current2
+        current2.next = next1        
+        current1 = next1
+        current2 = next2   
+    return head1 
+head1 = Node(1)
+head1.next = Node(3)
+head1.next.next = Node(5)
+head1.next.next.next = Node(7)
+head2 = Node(2)
+head2.next = Node(4)
+head2.next.next = Node(6)
+merged_head = merge_alternate(head1, head2)
+current = merged_head
+while current:
+    print(current.data, end=" -> ")
+    current = current.next
+print("None")
+------------------------------------------------------
+
+#Q2. Reverse a linked list in groups of given size.
+class Node:      
+    def __init__(self, data):
+        self.data = data
+        self.next = None        
+class LinkedList:  
+    def __init__(self):
+        self.head = None
+    def reverse(self, head, k):        
+        if head == None:
+          return None
+        current = head
+        next = None
+        prev = None
+        count = 0         
+        while(current is not None and count < k):
+            next = current.next
+            current.next = prev
+            prev = current
+            current = next
+            count += 1         
+        if next is not None:
+            head.next = self.reverse(next, k)  
+        return prev      
+    def push(self, new_data):
+        new_node = Node(new_data)
+        new_node.next = self.head
+        self.head = new_node      
+    def printList(self):
+        temp = self.head
+        while(temp):
+            print(temp.data,end=' ')
+            temp = temp.next    
+llist = LinkedList()
+llist.push(9)
+llist.push(8)
+llist.push(7)
+llist.push(6)
+llist.push(5)
+llist.push(4)
+llist.push(3)
+llist.push(2)
+llist.push(1) 
+print("Given linked list")
+llist.printList()
+llist.head = llist.reverse(llist.head, 3)
+print ("\nReversed Linked list")
+llist.printList()
+------------------------------------------------------
+
+#Q1. Delete the elements in an linked list whose sum is equal to zero.
+class ListNode:
+    def __init__(self, value):
+        self.value = value
+        self.next = None
+def delete_zero_sum_sublists(head):
+    dummy = ListNode(0)
+    dummy.next = head
+    current = dummy
+    prefix_sum = 0
+    prefix_sums = {}  # Store prefix sums along with corresponding node
+    while current:
+        prefix_sum += current.value        
+        if prefix_sum in prefix_sums:
+            # Remove nodes between prefix_sums[prefix_sum] and current
+            prev = prefix_sums[prefix_sum].next
+            temp_sum = prefix_sum           
+            while prev != current:
+                temp_sum += prev.value
+                del prefix_sums[temp_sum]
+                prev = prev.next
+            prefix_sums[prefix_sum].next = current.next
+        else:
+            prefix_sums[prefix_sum] = current        
+        current = current.next    
+    return dummy.next
+head = ListNode(3)
+head.next = ListNode(4)
+head.next.next = ListNode(-7)
+head.next.next.next = ListNode(5)
+head.next.next.next.next = ListNode(-6)
+head.next.next.next.next.next = ListNode(6)
+new_head = delete_zero_sum_sublists(head)
+current = new_head
+while current:
+    print(current.value, end=" -> ")
+    current = current.next  
